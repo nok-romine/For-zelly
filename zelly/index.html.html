@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>This is for you 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #ffb6c1;
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .petal {
+    position: fixed;
+    top: -70px;
+    font-size: 26px;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(0)     rotate(0deg);   opacity: 1;   }
+    100% { transform: translateY(115vh) rotate(400deg); opacity: 0.3; }
+  }
+
+  .main {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 50px 20px 60px;
+  }
+
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    color: #7b002d;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+  }
+  .sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #c2185b;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* ── Gift box ── */
+  .gift-wrap {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    transition: transform 0.25s;
+    margin-bottom: 16px;
+  }
+  .gift-wrap:hover { transform: scale(1.06) translateY(-4px); }
+
+  .bow-left, .bow-right {
+    width: 38px; height: 28px;
+    background: #fff176;
+    border-radius: 50%;
+    border: 2px solid #f9a825;
+    position: absolute;
+  }
+  .bow-container {
+    position: relative;
+    width: 80px; height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 10px;
+    z-index: 2;
+  }
+  .bow-left  { left: 0;  transform: rotate(-25deg); }
+  .bow-right { right: 0; transform: rotate(25deg);  }
+  .bow-knot {
+    width: 16px; height: 16px;
+    background: #ffe082;
+    border-radius: 50%;
+    border: 2px solid #f9a825;
+    z-index: 3;
+  }
+  .gift-lid {
+    width: 164px; height: 38px;
+    background: #e91e63;
+    border-radius: 8px 8px 0 0;
+    border: 3px solid #ad1457;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 14px rgba(173,20,87,0.25);
+  }
+  .gift-lid::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 18px; height: 100%;
+    background: rgba(255,241,118,0.7);
+    border-radius: 4px;
+  }
+  .gift-box {
+    width: 150px; height: 130px;
+    background: #e91e63;
+    border-radius: 0 0 10px 10px;
+    border: 3px solid #ad1457;
+    border-top: none;
+    position: relative;
+    box-shadow: 0 10px 28px rgba(173,20,87,0.3);
+  }
+  .gift-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 18px; height: 100%;
+    background: rgba(255,241,118,0.7);
+    border-radius: 4px;
+  }
+  .gift-box::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; transform: translateY(-50%);
+    width: 100%; height: 18px;
+    background: rgba(255,241,118,0.7);
+    border-radius: 4px;
+  }
+  .click-hint {
+    font-size: 0.88rem;
+    color: #880e4f;
+    margin-top: 14px;
+    letter-spacing: 0.04em;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* ── Surprise reveal ── */
+  .surprise {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+  .surprise.show {
+    display: flex;
+    animation: popIn 0.55s cubic-bezier(0.22,1.6,0.6,1);
+  }
+  @keyframes popIn {
+    0%   { transform: scale(0.4); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+
+  /* ── Bouquet ── */
+  .bouquet-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  /*
+  ┌─────────────────────────────────────────────────────────┐
+  │  BOUQUET PHOTO — replace src below with your image      │
+  │  Example: src="bouquet.jpg"  or  src="https://..."      │
+  └─────────────────────────────────────────────────────────┘
+  */
+  .bouquet-img {
+    width: 220px;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 50% 50% 40% 40%;
+    border: 5px solid #f48fb1;
+    box-shadow: 0 8px 28px rgba(200,0,80,0.22);
+  }
+  .bouquet-label {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #880e4f;
+    text-align: center;
+  }
+
+  /* ── Photos grid ── */
+  .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 440px;
+    width: 100%;
+  }
+
+  /* ── Flip card ── */
+  .photo-card {
+    cursor: pointer;
+    perspective: 1000px;
+    min-height: 210px;
+    background: transparent;
+    border: none;
+  }
+  .card-inner {
+    width: 100%;
+    height: 210px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.4,0.2,0.2,1);
+  }
+  /* 360 spin: goes all the way around back to front face */
+  .photo-card.flipped .card-inner {
+    transform: rotateY(360deg);
+  }
+  .card-front, .card-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 3px solid #f48fb1;
+    box-shadow: 0 4px 18px rgba(233,30,99,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .card-front {
+    background: #fff;
+  }
+  .card-front img {
+    width: 100%;
+    height: 148px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+  }
+  .photo-caption {
+    font-size: 0.82rem;
+    color: #c2185b;
+    text-align: center;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    padding: 6px 8px 2px;
+  }
+  .tap-hint {
+    font-size: 0.68rem;
+    color: #f48fb1;
+    text-align: center;
+    padding: 0 0 6px;
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 0.04em;
+  }
+  /* Back face sits at 180deg so it's hidden initially */
+  .card-back {
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    transform: rotateY(180deg);
+    justify-content: center;
+    padding: 16px;
+  }
+  /* When card is at 360deg, back face (at 180deg offset) = 540deg total = hidden again.
+     We reveal the message by keeping the front visible at 360 and showing a toast overlay instead.
+     Better approach: use 180deg flip to show message, then 360 to return to front. */
+  .card-back-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  .card-back-msg {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #7b002d;
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  /* ── Message overlay (shown after spin completes) ── */
+  .msg-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    border: 3px solid #f48fb1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    z-index: 10;
+    animation: fadeInMsg 0.4s ease;
+  }
+  @keyframes fadeInMsg { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+  .msg-overlay.visible { display: flex; }
+
+  /* ── Music button ── */
+  .music-btn {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 100;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: #e91e63;
+    border: 3px solid #ad1457;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(173,20,87,0.35);
+    transition: transform 0.2s, background 0.2s;
+    user-select: none;
+  }
+  .music-btn:hover { transform: scale(1.12); background: #c2185b; }
+  .music-label {
+    position: fixed;
+    bottom: 76px;
+    right: 16px;
+    z-index: 100;
+    font-size: 0.75rem;
+    color: #880e4f;
+    background: rgba(255,255,255,0.7);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'Lato', sans-serif;
+    pointer-events: none;
+  }
+
+  /* ── Closing message ── */
+  .closing-msg {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #7b002d;
+    text-align: center;
+    max-width: 360px;
+    line-height: 1.8;
+    background: rgba(255,255,255,0.55);
+    padding: 20px 26px;
+    border-radius: 20px;
+    border: 2px solid #f48fb1;
+    backdrop-filter: blur(4px);
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <!--
+  ┌──────────────────────────────────────────────────────────────┐
+  │  BACKGROUND MUSIC                                            │
+  │  Replace  YOUR_MUSIC_FILE_HERE.mp3  with your audio file     │
+  │  Example:  src="song.mp3"   or   src="https://..."           │
+  │  Supported formats: .mp3  .ogg  .wav  .m4a                  │
+  └──────────────────────────────────────────────────────────────┘
+  -->
+  <audio id="bgMusic" loop>
+    <source src="pahinga.mp3" type="audio/mpeg"/>
+  </audio>
+
+  <div class="music-label" id="musicLabel">🎵 Music off</div>
+  <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle music">🔇</button>
+
+  <h1 class="headline">This is for you 💖</h1>
+  <p class="sub">You deserve all the good things in this world.</p>
+
+  <!-- Gift box -->
+  <div class="gift-wrap" id="giftWrap" onclick="openGift()" title="Click me!">
+    <div class="bow-container">
+      <div class="bow-left"></div>
+      <div class="bow-knot"></div>
+      <div class="bow-right"></div>
+    </div>
+    <div class="gift-lid"></div>
+    <div class="gift-box"></div>
+    <p class="click-hint">✨ Click to open your gift! ✨</p>
+  </div>
+
+  <!-- Surprise contents -->
+  <div class="surprise" id="surprise">
+
+    <!-- BOUQUET PHOTO -->
+    <div class="bouquet-area">
+      <img class="bouquet-img" src="bouquet.jpg" alt="A beautiful bouquet of roses"/>
+      <p class="bouquet-label">A little bouquet, just for you 🌸</p>
+    </div>
+
+    <!-- 4 PHOTOS GRID -->
+    <div class="photos-grid">
+
+      <!-- Photo 1 -->
+      <div class="photo-card" onclick="spinCard(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <!--  PHOTO 1 — replace src  -->
+            <img src="1.jpg" alt="Cute"/>
+            <p class="photo-caption">Cute 💕</p>
+            <p class="tap-hint">tap to reveal ✨</p>
+          </div>
+        </div>
+        <div class="msg-overlay">
+          <div class="card-back-icon">💕</div>
+          <!--
+          ┌─────────────────────────────────────┐
+          │  MESSAGE FOR PHOTO 1 — edit below   │
+          └─────────────────────────────────────┘
+          -->
+          <p class="card-back-msg">I know its hard but i know you will overcome it.</p>
+        </div>
+      </div>
+
+      <!-- Photo 2 -->
+      <div class="photo-card" onclick="spinCard(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <!--  PHOTO 2 — replace src  -->
+            <img src="2.jpg" alt="Beatiful Girl"/>
+            <p class="photo-caption">Beatiful Girl 🌸</p>
+            <p class="tap-hint">tap to reveal ✨</p>
+          </div>
+        </div>
+        <div class="msg-overlay">
+          <div class="card-back-icon">🌸</div>
+          <!--
+          ┌─────────────────────────────────────┐
+          │  MESSAGE FOR PHOTO 2 — edit below   │
+          └─────────────────────────────────────┘
+          -->
+          <p class="card-back-msg">I know you are strong.</p>
+        </div>
+      </div>
+
+      <!-- Photo 3 -->
+      <div class="photo-card" onclick="spinCard(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <!--  PHOTO 3 — replace src  -->
+            <img src="3.jpg" alt="Pretty"/>
+            <p class="photo-caption">Pretty 🌹</p>
+            <p class="tap-hint">tap to reveal ✨</p>
+          </div>
+        </div>
+        <div class="msg-overlay">
+          <div class="card-back-icon">🌹</div>
+          <!--
+          ┌─────────────────────────────────────┐
+          │  MESSAGE FOR PHOTO 3 — edit below   │
+          └─────────────────────────────────────┘
+          -->
+          <p class="card-back-msg">I will always be here whenever you need me.</p>
+        </div>
+      </div>
+
+      <!-- Photo 4 -->
+      <div class="photo-card" onclick="spinCard(this)">
+        <div class="card-inner">
+          <div class="card-front">
+            <!--  PHOTO 4 — replace src  -->
+            <img src="4.jpg" alt="Gorgeous"/>
+            <p class="photo-caption">Gorgeous ✨</p>
+            <p class="tap-hint">tap to reveal ✨</p>
+          </div>
+        </div>
+        <div class="msg-overlay">
+          <div class="card-back-icon">✨</div>
+          <!--
+          ┌─────────────────────────────────────┐
+          │  MESSAGE FOR PHOTO 4 — edit below   │
+          └─────────────────────────────────────┘
+          -->
+          <p class="card-back-msg">You deserve respect and well appreciated.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Closing message -->
+    <p class="closing-msg">
+      You are so loved, so strong, and so cute, pretty, beautiful and gorgeous. 💕<br>
+      Even on the hard days,  you make this world brighter just by being in it.
+    </p>
+
+  </div>
+</div>
+
+<script>
+  // ── Spin card 360° then reveal message overlay ──
+  function spinCard(card) {
+    const overlay = card.querySelector('.msg-overlay');
+    const inner   = card.querySelector('.card-inner');
+
+    if (overlay.classList.contains('visible')) {
+      // Tap again: hide message, reset spin
+      overlay.classList.remove('visible');
+      inner.style.transition = 'none';
+      inner.style.transform  = 'rotateY(0deg)';
+      return;
+    }
+
+    // Spin 360°
+    inner.style.transition = 'transform 0.9s cubic-bezier(0.4,0.2,0.2,1)';
+    inner.style.transform  = 'rotateY(360deg)';
+
+    // After spin finishes, show message and reset transform silently
+    setTimeout(() => {
+      overlay.classList.add('visible');
+      inner.style.transition = 'none';
+      inner.style.transform  = 'rotateY(0deg)';
+    }, 920);
+  }
+
+  // ── Music toggle ──
+  const music      = document.getElementById('bgMusic');
+  const musicBtn   = document.getElementById('musicBtn');
+  const musicLabel = document.getElementById('musicLabel');
+  let playing = false;
+
+  function toggleMusic() {
+    if (!playing) {
+      music.play().then(() => {
+        playing = true;
+        musicBtn.textContent   = '🎵';
+        musicLabel.textContent = '🎵 Music on';
+      }).catch(() => {
+        musicLabel.textContent = '⚠️ No file yet';
+      });
+    } else {
+      music.pause();
+      playing = false;
+      musicBtn.textContent   = '🔇';
+      musicLabel.textContent = '🎵 Music off';
+    }
+  }
+
+  // ── Falling petals ──
+  const symbols = ['🌹','🌸','🌺','🌷','❤️','💕','✨','🌼'];
+  function spawnPetal() {
+    const el = document.createElement('div');
+    el.className = 'petal';
+    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    el.style.left = (Math.random() * 100) + 'vw';
+    el.style.fontSize = (18 + Math.random() * 18) + 'px';
+    const dur = 5 + Math.random() * 5;
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay    = (Math.random() * 2) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 3) * 1000);
+  }
+  for (let i = 0; i < 14; i++) setTimeout(spawnPetal, i * 200);
+  setInterval(spawnPetal, 500);
+
+  // ── Open gift ──
+  function openGift() {
+    document.getElementById('giftWrap').style.display = 'none';
+    document.getElementById('surprise').classList.add('show');
+    for (let i = 0; i < 20; i++) setTimeout(spawnPetal, i * 60);
+  }
+</script>
+</body>
+</html>
